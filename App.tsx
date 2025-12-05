@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { ITINERARY_DATA, TICKETS } from "./data";
-import { ItineraryItem, ActivityType } from "./types";
+import { ItineraryItem, ActivityType, DaySchedule } from "./types";
 import {
   CheckCircle,
   Circle,
@@ -16,6 +16,10 @@ import {
   Ticket as TicketIcon,
   ExternalLink,
   Heart,
+  ArrowUp,
+  ArrowDown,
+  Settings2,
+  RotateCcw,
 } from "lucide-react";
 
 const STORAGE_KEY = "sevilla_trip_progress_v1";
@@ -71,6 +75,77 @@ const App: React.FC = () => {
   const [activeTabId, setActiveTabId] = useState<string>(ITINERARY_DATA[0].id);
   const [showConfetti, setShowConfetti] = useState(false);
 
+  // State for itinerary data to allow reordering
+  const [itineraryData, setItineraryData] = useState<DaySchedule[]>(() => {
+    if (typeof window !== "undefined") {
+      const saved = localStorage.getItem("sevilla_itinerary_data_v1");
+      if (saved) {
+        try {
+          return JSON.parse(saved);
+        } catch (e) {
+          console.error("Failed to parse saved itinerary", e);
+        }
+      }
+    }
+    return ITINERARY_DATA;
+  });
+
+  const [isEditMode, setIsEditMode] = useState(false);
+
+  useEffect(() => {
+    localStorage.setItem(
+      "sevilla_itinerary_data_v1",
+      JSON.stringify(itineraryData)
+    );
+  }, [itineraryData]);
+
+  const moveItem = (
+    dayId: string,
+    itemId: string,
+    direction: "up" | "down"
+  ) => {
+    setItineraryData((prev) => {
+      const newData = [...prev];
+      const dayIndex = newData.findIndex((d) => d.id === dayId);
+      if (dayIndex === -1) return prev;
+
+      const day = { ...newData[dayIndex] };
+      const items = [...day.items];
+      const itemIndex = items.findIndex((i) => i.id === itemId);
+      if (itemIndex === -1) return prev;
+
+      if (direction === "up" && itemIndex > 0) {
+        [items[itemIndex], items[itemIndex - 1]] = [
+          items[itemIndex - 1],
+          items[itemIndex],
+        ];
+      } else if (direction === "down" && itemIndex < items.length - 1) {
+        [items[itemIndex], items[itemIndex + 1]] = [
+          items[itemIndex + 1],
+          items[itemIndex],
+        ];
+      } else {
+        return prev;
+      }
+
+      day.items = items;
+      newData[dayIndex] = day;
+      return newData;
+    });
+  };
+
+  const resetOrder = () => {
+    if (
+      window.confirm(
+        "Sıralamayı ve içerikleri varsayılana döndürmek istediğine emin misin?"
+      )
+    ) {
+      setItineraryData(ITINERARY_DATA);
+      localStorage.removeItem("sevilla_itinerary_data_v1");
+      setIsEditMode(false);
+    }
+  };
+
   useEffect(() => {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(completedItems));
   }, [completedItems]);
@@ -98,7 +173,7 @@ const App: React.FC = () => {
   };
 
   // Calculate overall progress
-  const totalItems = ITINERARY_DATA.flatMap((d) => d.items).length;
+  const totalItems = itineraryData.flatMap((d) => d.items).length;
   const completedCount = completedItems.length;
   const progressPercentage = Math.round((completedCount / totalItems) * 100);
 
@@ -108,7 +183,7 @@ const App: React.FC = () => {
       (1000 * 60 * 60 * 24)
   );
 
-  const activeDay = ITINERARY_DATA.find((d) => d.id === activeTabId);
+  const activeDay = itineraryData.find((d) => d.id === activeTabId);
   const isTicketsTab = activeTabId === "tickets";
 
   return (
@@ -125,7 +200,7 @@ const App: React.FC = () => {
         <div className="max-w-3xl mx-auto px-4 py-4">
           <div className="flex justify-between items-start mb-3">
             <div>
-              <h1 className="text-3xl font-black text-slate-900 tracking-tight mb-1">
+              <h1 className="text-2xl md:text-3xl font-black text-slate-900 tracking-tight mb-1">
                 Sevilla Gezisi
               </h1>
               <div className="flex items-center gap-2 text-rose-500 mb-1">
@@ -144,10 +219,34 @@ const App: React.FC = () => {
               </p>
             </div>
             <div className="text-right">
+              <div className="flex items-center justify-end gap-2 mb-2">
+                <button
+                  onClick={() => setIsEditMode(!isEditMode)}
+                  className={`p-1.5 rounded-lg transition-colors ${
+                    isEditMode
+                      ? "bg-seville-100 text-seville-700 ring-2 ring-seville-200"
+                      : "text-slate-400 hover:bg-slate-100 hover:text-slate-600"
+                  }`}
+                  title={
+                    isEditMode ? "Düzenlemeyi Bitir" : "Sıralamayı Düzenle"
+                  }
+                >
+                  <Settings2 className="w-4 h-4" />
+                </button>
+                {isEditMode && (
+                  <button
+                    onClick={resetOrder}
+                    className="p-1.5 rounded-lg text-slate-400 hover:bg-red-50 hover:text-red-600 transition-colors"
+                    title="Varsayılana Dön"
+                  >
+                    <RotateCcw className="w-4 h-4" />
+                  </button>
+                )}
+              </div>
               <div className="text-sm font-semibold text-seville-600">
                 %{progressPercentage} Tamamlandı
               </div>
-              <p className="text-xs text-slate-400">
+              <p className="text-xs text-slate-400 hidden sm:block">
                 {completedCount}/{totalItems} Aktivite
               </p>
             </div>
@@ -164,7 +263,7 @@ const App: React.FC = () => {
 
         {/* Day Tabs */}
         <div className="flex overflow-x-auto no-scrollbar border-t border-slate-100">
-          {ITINERARY_DATA.map((day) => (
+          {itineraryData.map((day) => (
             <button
               key={day.id}
               onClick={() => setActiveTabId(day.id)}
@@ -250,7 +349,7 @@ const App: React.FC = () => {
                 </div>
               ))
             : // Itinerary Items
-              activeDay?.items.map((item) => {
+              activeDay?.items.map((item, index) => {
                 const isCompleted = completedItems.includes(item.id);
 
                 return (
@@ -280,7 +379,7 @@ const App: React.FC = () => {
                       <div className="absolute inset-0 bg-slate-50/40 z-10 pointer-events-none" />
                     )}
 
-                    <div className="p-5 flex gap-4">
+                    <div className="p-4 md:p-5 flex gap-3 md:gap-4">
                       {/* Checkbox Column */}
                       <div className="flex-shrink-0 pt-1 z-20">
                         <button
@@ -404,6 +503,32 @@ const App: React.FC = () => {
                           </div>
                         )}
                       </div>
+
+                      {/* Reorder Controls */}
+                      {isEditMode && activeDay && (
+                        <div className="flex flex-col gap-1 justify-center border-l pl-3 ml-2 border-slate-100">
+                          <button
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              moveItem(activeDay.id, item.id, "up");
+                            }}
+                            disabled={index === 0}
+                            className="p-2 md:p-1.5 hover:bg-slate-100 rounded-lg text-slate-400 hover:text-seville-600 disabled:opacity-30 disabled:hover:bg-transparent transition-colors touch-manipulation"
+                          >
+                            <ArrowUp className="w-6 h-6 md:w-5 md:h-5" />
+                          </button>
+                          <button
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              moveItem(activeDay.id, item.id, "down");
+                            }}
+                            disabled={index === activeDay.items.length - 1}
+                            className="p-2 md:p-1.5 hover:bg-slate-100 rounded-lg text-slate-400 hover:text-seville-600 disabled:opacity-30 disabled:hover:bg-transparent transition-colors touch-manipulation"
+                          >
+                            <ArrowDown className="w-6 h-6 md:w-5 md:h-5" />
+                          </button>
+                        </div>
+                      )}
                     </div>
                   </div>
                 );

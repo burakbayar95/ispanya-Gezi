@@ -315,6 +315,13 @@ const App: React.FC = () => {
                               {item.time}
                             </span>
                           )}
+                          {(item.title.includes("Outlet") ||
+                            item.title.includes("SEÇENEK")) && (
+                            <span className="text-xs font-bold text-fuchsia-600 bg-fuchsia-50 px-2 py-0.5 rounded border border-fuchsia-100 flex items-center gap-1">
+                              <ShoppingBag className="w-3 h-3" />
+                              Fırsat
+                            </span>
+                          )}
                           {item.isBonus && (
                             <span className="text-xs font-semibold text-purple-600 bg-purple-50 px-2 py-0.5 rounded border border-purple-100">
                               Bonus
@@ -354,9 +361,9 @@ const App: React.FC = () => {
 
                         {/* Metadata: Price & Location */}
                         {(item.price || item.location) && (
-                          <div className="flex flex-wrap gap-x-4 gap-y-1 text-sm text-slate-500 mt-2">
+                          <div className="flex flex-wrap gap-x-3 gap-y-2 text-sm text-slate-500 mt-3">
                             {item.price && (
-                              <div className="flex items-center text-emerald-700 font-medium bg-emerald-50 px-2 py-0.5 rounded-md">
+                              <div className="flex items-center text-emerald-700 font-semibold bg-emerald-50 px-2.5 py-1 rounded-full border border-emerald-100 shadow-sm text-xs">
                                 <Euro className="w-3.5 h-3.5 mr-1" />
                                 {item.price}
                               </div>

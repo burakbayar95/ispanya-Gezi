@@ -292,6 +292,40 @@ export const ITINERARY_DATA: DaySchedule[] = [
         ]
       },
       {
+        id: 'd4-retiro',
+        title: 'Retiro Parkı & Kristal Saray (Alternatif)',
+        description: 'Madrid\'in akciğeri. İçindeki camdan yapılmış "Palacio de Cristal" göl kenarında harika fotoğraf verir.',
+        location: 'Parque de El Retiro',
+        type: ActivityType.SIGHTSEEING,
+        isOptional: true
+      },
+      {
+        id: 'd4-prado',
+        title: 'Prado Müzesi (Alternatif)',
+        description: 'Dünyanın en prestijli sanat müzelerinden biri. Sanatla aran iyiyse kaçırma.',
+        location: 'Museo del Prado',
+        type: ActivityType.SIGHTSEEING,
+        isOptional: true
+      },
+      {
+        id: 'd4-bellasartes',
+        title: 'Círculo de Bellas Artes (Teras) (Alternatif)',
+        description: 'Madrid manzarasını tepeden izlemek için en iyi nokta.',
+        location: 'Círculo de Bellas Artes',
+        price: '~5€',
+        type: ActivityType.SIGHTSEEING,
+        isOptional: true
+      },
+      {
+        id: 'd4-bernabeu',
+        title: 'Santiago Bernabéu Stadyumu (Alternatif)',
+        description: 'Futbol seviyorsan mabet burası. Müzesi ve stadyum turu çok etkileyici.',
+        location: 'Santiago Bernabéu Stadium',
+        price: '~30€ - 35€',
+        type: ActivityType.SIGHTSEEING,
+        isOptional: true
+      },
+      {
         id: 'd4-dinner',
         time: 'Akşam',
         title: 'Akşam Yemeği: Takos al Pastor',

@@ -3,7 +3,8 @@ export enum ActivityType {
   SIGHTSEEING = 'Gezilecek Yer',
   SHOPPING = 'Alışveriş',
   TRANSPORT = 'Ulaşım',
-  ENTERTAINMENT = 'Eğlence'
+  ENTERTAINMENT = 'Eğlence',
+  CHRISTMAS_MARKET = 'Noel Pazarı'
 }
 
 export interface ItineraryItem {
@@ -16,6 +17,8 @@ export interface ItineraryItem {
   type: ActivityType;
   tips?: string[];
   isBonus?: boolean;
+  isOptional?: boolean;
+  isUrgent?: boolean;
 }
 
 export interface DaySchedule {
@@ -23,4 +26,12 @@ export interface DaySchedule {
   date: string;
   title: string;
   items: ItineraryItem[];
+}
+
+export interface Ticket {
+  id: string;
+  title: string;
+  url: string;
+  description?: string;
+  isUrgent?: boolean;
 }

@@ -102,6 +102,12 @@ const App: React.FC = () => {
   const completedCount = completedItems.length;
   const progressPercentage = Math.round((completedCount / totalItems) * 100);
 
+  // Calculate days left
+  const daysLeft = Math.ceil(
+    (new Date("2025-12-16").getTime() - new Date().getTime()) /
+      (1000 * 60 * 60 * 24)
+  );
+
   const activeDay = ITINERARY_DATA.find((d) => d.id === activeTabId);
   const isTicketsTab = activeTabId === "tickets";
 
@@ -128,8 +134,13 @@ const App: React.FC = () => {
                 </span>
                 <Heart className="w-5 h-5 fill-rose-500 animate-pulse" />
               </div>
-              <p className="text-xs text-slate-500 font-medium">
-                16 - 20 Aralık • Such A Lovely Day
+              <p className="text-xs text-slate-500 font-medium flex items-center gap-2">
+                <span>16 - 20 Aralık • Such A Lovely Day</span>
+                {daysLeft > 0 && (
+                  <span className="bg-orange-100 text-orange-700 px-2 py-0.5 rounded-full text-[10px] font-bold border border-orange-200">
+                    {daysLeft} Gün Kaldı! ⏳
+                  </span>
+                )}
               </p>
             </div>
             <div className="text-right">
@@ -351,10 +362,18 @@ const App: React.FC = () => {
                               </div>
                             )}
                             {item.location && (
-                              <div className="flex items-center">
+                              <a
+                                href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(
+                                  item.location
+                                )}`}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="flex items-center hover:text-seville-600 transition-colors hover:underline decoration-seville-300 underline-offset-2"
+                                onClick={(e) => e.stopPropagation()}
+                              >
                                 <MapPin className="w-3.5 h-3.5 mr-1" />
                                 {item.location}
-                              </div>
+                              </a>
                             )}
                           </div>
                         )}

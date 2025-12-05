@@ -123,6 +123,22 @@ export const ITINERARY_DATA: DaySchedule[] = [
         type: ActivityType.CHRISTMAS_MARKET
       },
       {
+        id: 'd2-triana',
+        title: 'Triana Mahallesi & Köprüsü (Alternatif)',
+        description: 'Nehrin karşı kıyısı. Seramikleri ve yerel atmosferi meşhur. Köprüden manzara harika.',
+        location: 'Puente de Triana',
+        type: ActivityType.SIGHTSEEING,
+        isOptional: true
+      },
+      {
+        id: 'd2-torre',
+        title: 'Torre del Oro (Altın Kule) (Alternatif)',
+        description: 'Nehir kenarında ikonik gözetleme kulesi. Sadece dışarıdan fotoğraf çekmek yeterli.',
+        location: 'Torre del Oro',
+        type: ActivityType.SIGHTSEEING,
+        isOptional: true
+      },
+      {
         id: 'd2-duenas',
         title: 'Palacio de las Dueñas (Opsiyonel)',
         description: 'Alcázar çok kalabalıksa, burası çiçeklerle dolu daha huzurlu bir saray. "Cennetten bir bahçe".',
@@ -290,6 +306,14 @@ export const ITINERARY_DATA: DaySchedule[] = [
           'Primark Gran Vía: Oteline yürüme mesafesinde. Çok katlı devasa mağaza.',
           'Lefties: Inditex grubunun (Zara\'nın) outlet ürünlerinin satıldığı mağaza.'
         ]
+      },
+      {
+        id: 'd4-alcala',
+        title: 'Puerta de Alcalá (Alternatif)',
+        description: 'Retiro Parkı\'nın hemen girişindeki ikonik anıt kapı. Fotoğraf için harika.',
+        location: 'Puerta de Alcalá',
+        type: ActivityType.SIGHTSEEING,
+        isOptional: true
       },
       {
         id: 'd4-retiro',
